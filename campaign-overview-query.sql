@@ -2,11 +2,11 @@ WITH naklady AS (
     SELECT bp.CampaignID,
            SUM(
                CASE bpos.PriceType
-                   -- placeno za den: cena x delka kampane (umisteni nema vlastni datumy)
-                   WHEN 'per_day' THEN
+                   -- 1 = per_day: cena x delka kampane (umisteni nema vlastni datumy)
+                   WHEN 1 THEN
                        bpos.PriceAmount * (c.DateEnd - c.DateStart + 1)
-                   -- placeno za proklik: cena x skutecny pocet prokliku
-                   WHEN 'per_click' THEN
+                   -- 2 = per_click: cena x skutecny pocet prokliku
+                   WHEN 2 THEN
                        bpos.PriceAmount * COALESCE(bp.ClickCount, 0)
                END
            ) AS Naklady
