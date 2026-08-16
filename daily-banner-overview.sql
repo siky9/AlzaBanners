@@ -14,8 +14,8 @@ naklady AS (
     SELECT EXTRACT(ISODOW FROM den)::int AS Dow,
            SUM(bpos.PriceAmount)         AS Naklady
     FROM BannerPlacement bp
-             JOIN BannerPosition bpos ON bpos.UniqueID = bp.BannerPositionID
-             JOIN Campaign c ON c.UniqueID = bp.CampaignID
+             JOIN BannerPosition bpos ON bpos.ID = bp.BannerPositionID
+             JOIN Campaign c ON c.ID = bp.CampaignID
              CROSS JOIN LATERAL generate_series(
                      c.DateStart, c.DateEnd, INTERVAL '1 day'
                  ) AS den
@@ -29,11 +29,11 @@ vynosy AS (
              -- kazdy nakup jen jednou, i kdyz prisel z vice dennich banneru
              SELECT DISTINCT pbp.PurchaseID
              FROM PurchaseBannerPlacement pbp
-                      JOIN BannerPlacement bp ON bp.UniqueID = pbp.BannerPlacementID
-                      JOIN BannerPosition bpos ON bpos.UniqueID = bp.BannerPositionID
+                      JOIN BannerPlacement bp ON bp.ID = pbp.BannerPlacementID
+                      JOIN BannerPosition bpos ON bpos.ID = bp.BannerPositionID
              WHERE bpos.PriceType = 1
          ) t
-             JOIN Purchase p ON p.UniqueID = t.PurchaseID
+             JOIN Purchase p ON p.ID = t.PurchaseID
     GROUP BY 1
 )
 SELECT d.Nazev                                            AS DenVTydnu,

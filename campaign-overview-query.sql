@@ -11,8 +11,8 @@ WITH naklady AS (
                END
            ) AS Naklady
     FROM BannerPlacement bp
-             JOIN BannerPosition bpos ON bpos.UniqueID = bp.BannerPositionID
-             JOIN Campaign c ON c.UniqueID = bp.CampaignID
+             JOIN BannerPosition bpos ON bpos.ID = bp.BannerPositionID
+             JOIN Campaign c ON c.ID = bp.CampaignID
     GROUP BY bp.CampaignID
 ),
 vynosy AS (
@@ -23,18 +23,18 @@ vynosy AS (
              SELECT DISTINCT bp.CampaignID, pbp.PurchaseID
              FROM BannerPlacement bp
                       JOIN PurchaseBannerPlacement pbp
-                           ON pbp.BannerPlacementID = bp.UniqueID
+                           ON pbp.BannerPlacementID = bp.ID
          ) t
-             JOIN Purchase p ON p.UniqueID = t.PurchaseID
+             JOIN Purchase p ON p.ID = t.PurchaseID
     GROUP BY t.CampaignID
 )
-SELECT c.UniqueID AS CampaignID,
+SELECT c.ID AS CampaignID,
        c.DateStart,
        c.DateEnd,
        COALESCE(v.Vynosy, 0)  AS Vynosy,
        COALESCE(n.Naklady, 0) AS Naklady,
        COALESCE(v.Vynosy, 0) - COALESCE(n.Naklady, 0) AS Bilance
 FROM Campaign c
-         LEFT JOIN vynosy v ON v.CampaignID = c.UniqueID
-         LEFT JOIN naklady n ON n.CampaignID = c.UniqueID
+         LEFT JOIN vynosy v ON v.CampaignID = c.ID
+         LEFT JOIN naklady n ON n.CampaignID = c.ID
 ORDER BY Bilance DESC;
